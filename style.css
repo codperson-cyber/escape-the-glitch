@@ -1,3 +1,4 @@
+
 body {
   background-color: #111;
   color: white;
@@ -93,4 +94,38 @@ body {
     opacity: 0.3;
     transform: scale(1.05);
   }
+}
+
+#message-box {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  border: 2px solid #44ff88;
+  padding: 16px 24px;
+  border-radius: 8px;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 0 10px #44ff88;
+  z-index: 1000;
+}
+
+#message-box.hidden {
+  display: none;
+}
+
+#message-box button {
+  margin-top: 12px;
+  padding: 6px 16px;
+  background: #44ff88;
+  color: #111;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#message-box button:hover {
+  background: #33cc66;
 }
