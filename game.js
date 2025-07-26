@@ -3,10 +3,10 @@ const gameContainer = document.getElementById('game-container');
 const levelMap = [
   ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
   ['#', '.', '.', '.', '.', '.', '.', '.', '*', '#'],
-  ['#', '.', '#', '#', '#', '.', '#', '.', '.', '#'],
+  ['#', '.', '#', '#', '#', '.', '#', 'G', '.', '#'],
   ['#', '.', '.', 'P', '.', '.', '#', '.', '.', '#'],
   ['#', '#', '.', '#', '#', '.', '#', '.', '#', '#'],
-  ['#', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
+  ['#', '.', '.', '.', '.', '.', 'G', '.', '.', '#'],
   ['#', '.', '#', '#', '#', '#', '#', '#', '.', '#'],
   ['#', '.', '.', '.', '.', '.', '.', '#', '.', '#'],
   ['#', '*', '#', '#', '#', '#', '.', '#', 'E', '#'],
@@ -18,7 +18,8 @@ const TILE_TYPES = {
   '.': 'floor',
   'P': 'player',
   '*': 'data',
-  'E': 'exit'
+  'E': 'exit',
+  'G': 'glitch'
 };
 
 let playerPos = { x: 3, y: 3 };
@@ -69,21 +70,24 @@ function movePlayer(dx, dy) {
   // Check tile player moved onto
   const tileChar = levelMap[newY][newX];
 
-  if (tileChar === '*') {
-    collectedData++;
-    levelMap[newY][newX] = '.'; // Remove the data piece
-    alert(`Data fragment collected! (${collectedData} / ${totalData})`);
-  }
+if (tileChar === '*') {
+  collectedData++;
+  levelMap[newY][newX] = '.'; // Remove the data piece
+  alert(`Data fragment collected! (${collectedData} / ${totalData})`);
+}
 
-  if (tileChar === 'E') {
-    if (collectedData === totalData) {
-      alert('Congratulations! You escaped the glitch!');
-      // Optionally reset or reload level here
-    } else {
-      alert('You need to collect all data fragments first!');
-    }
+if (tileChar === 'E') {
+  if (collectedData === totalData) {
+    alert('Congratulations! You escaped the glitch!');
+  } else {
+    alert('You need to collect all data fragments first!');
   }
+}
 
+if (tileChar === 'G') {
+  alert('You stepped into a glitch! Returning to start...');
+  playerPos = { x: 3, y: 3 }; // Reset to original position
+}
   drawLevel();
 }
 
