@@ -67,11 +67,13 @@ body {
 }
 
 /* Glitch effect */
-@keyframes glitch-flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+.tile.glitch {
+  background-color: #ff00cc;
+  animation: glitch-flicker 0.2s infinite;
+  box-shadow: 0 0 8px #ff00cc;
 }
 
-.tile.glitch {
-  animation: glitch-flicker 0.5s infinite;
+@keyframes glitch-flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.05); }
 }
