@@ -1,0 +1,77 @@
+/* Basic reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #121212;
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Game container uses CSS grid */
+#game-container {
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(10, 40px);
+  gap: 2px;
+  width: max-content;
+  background: #222;
+  border: 4px solid #44ff88;
+  box-shadow: 0 0 10px #44ff88;
+}
+
+/* Tiles */
+.tile {
+  width: 40px;
+  height: 40px;
+  background-color: #333;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+/* Different tile types */
+.tile.wall {
+  background-color: #555;
+}
+
+.tile.floor {
+  background-color: #222;
+}
+
+.tile.exit {
+  background-color: #44ff88;
+  box-shadow: 0 0 8px #44ff88;
+}
+
+.tile.data {
+  background-color: #ffaa44;
+  box-shadow: 0 0 8px #ffaa44;
+}
+
+/* Player */
+.tile.player {
+  background-color: #4488ff;
+  box-shadow: 0 0 10px #4488ff;
+}
+
+/* Enemy */
+.tile.enemy {
+  background-color: #ff4444;
+  box-shadow: 0 0 10px #ff4444;
+}
+
+/* Glitch effect */
+@keyframes glitch-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.tile.glitch {
+  animation: glitch-flicker 0.5s infinite;
+}
