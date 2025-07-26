@@ -1,72 +1,83 @@
-/* Basic reset */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 body {
-  background-color: #121212;
-  color: #eee;
+  background-color: #111;
+  color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
-  padding: 20px;
+  padding: 40px;
+  margin: 0;
 }
 
-/* Game container uses CSS grid */
+#menu-screen {
+  padding: 50px;
+}
+
+.subtitle {
+  font-size: 1.2em;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+#start-button {
+  padding: 12px 24px;
+  font-size: 1em;
+  background-color: #44ff88;
+  color: #111;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#start-button:hover {
+  background-color: #33cc66;
+}
+
+.credits {
+  margin-top: 30px;
+  font-size: 0.9em;
+  color: #888;
+}
+
 #game-container {
-  margin: 20px auto;
   display: grid;
   grid-template-columns: repeat(10, 40px);
   grid-template-rows: repeat(10, 40px);
-  gap: 2px;
-  width: max-content;
-  background: #222;
-  border: 4px solid #44ff88;
-  box-shadow: 0 0 10px #44ff88;
+  gap: 1px;
+  justify-content: center;
+  margin: 20px auto;
 }
 
-/* Tiles */
 .tile {
   width: 40px;
   height: 40px;
-  background-color: #333;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+  line-height: 40px;
+  font-size: 24px;
+  user-select: none;
 }
 
-/* Different tile types */
 .tile.wall {
-  background-color: #555;
-}
-
-.tile.floor {
   background-color: #222;
 }
 
-.tile.exit {
-  background-color: #44ff88;
-  box-shadow: 0 0 8px #44ff88;
+.tile.floor {
+  background-color: #333;
+}
+
+.tile.player {
+  background-color: #4caf50;
+  color: white;
 }
 
 .tile.data {
-  background-color: #ffaa44;
-  box-shadow: 0 0 8px #ffaa44;
+  background-color: #2196f3;
+  color: white;
 }
 
-/* Player */
-.tile.player {
-  background-color: #4488ff;
-  box-shadow: 0 0 10px #4488ff;
+.tile.exit {
+  background-color: #ff9800;
+  color: white;
 }
 
-/* Enemy */
-.tile.enemy {
-  background-color: #ff4444;
-  box-shadow: 0 0 10px #ff4444;
-}
-
-/* Glitch effect */
 .tile.glitch {
   background-color: #ff00cc;
   animation: glitch-flicker 0.2s infinite;
@@ -74,6 +85,12 @@ body {
 }
 
 @keyframes glitch-flicker {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(1.05); }
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
 }
