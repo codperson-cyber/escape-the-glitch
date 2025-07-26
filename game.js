@@ -1,4 +1,16 @@
 const gameContainer = document.getElementById('game-container');
+const startButton = document.getElementById('start-button');
+const menuScreen = document.getElementById('menu-screen');
+const instructions = document.getElementById('game-instructions');
+
+const TILE_TYPES = {
+  '#': 'wall',
+  '.': 'floor',
+  'P': 'player',
+  '*': 'data',
+  'E': 'exit',
+  'G': 'glitch'
+};
 
 const levelMap = [
   ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
@@ -13,18 +25,9 @@ const levelMap = [
   ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
 ];
 
-const TILE_TYPES = {
-  '#': 'wall',
-  '.': 'floor',
-  'P': 'player',
-  '*': 'data',
-  'E': 'exit',
-  'G': 'glitch'
-};
-
 let playerPos = { x: 3, y: 3 };
 let collectedData = 0;
-const totalData = levelMap.flat().filter(t => t === '*').length;
+const totalData = levelMap.flat().filter(tile => tile === '*').length;
 
 function drawLevel() {
   gameContainer.innerHTML = '';
@@ -33,66 +36,101 @@ function drawLevel() {
       const tileChar = levelMap[y][x];
       const tileDiv = document.createElement('div');
       tileDiv.classList.add('tile');
-
-      // Apply tile type class
-      if (TILE_TYPES[tileChar]) {
-        tileDiv.classList.add(TILE_TYPES[tileChar]);
-      } else {
-        tileDiv.classList.add('floor');
-      }
-
-      // If player position, override class to player
-      if (playerPos.x === x && playerPos.y === y) {
-        tileDiv.classList.remove('player', 'data'); // Remove old classes if any
-        tileDiv.classList.add('player');
-      }
-
+      tileDiv.classList.add(TILE_TYPES[tileChar]);
+      tileDiv.textContent = tileChar === 'P' ? '🧑' :
+                            tileChar === '*' ? '📀' :
+                            tileChar === 'E' ? '🚪' :
+                            tileChar === 'G' ? '⚠️' : '';
       gameContainer.appendChild(tileDiv);
     }
   }
-}
-
-function canMoveTo(x, y) {
-  if (y < 0 || y >= levelMap.length || x < 0 || x >= levelMap[0].length) return false;
-  if (levelMap[y][x] === '#') return false;
-  return true;
 }
 
 function movePlayer(dx, dy) {
   const newX = playerPos.x + dx;
   const newY = playerPos.y + dy;
 
-  if (!canMoveTo(newX, newY)) return;
-
-  playerPos.x = newX;
-  playerPos.y = newY;
-
-  // Check tile player moved onto
-  const tileChar = levelMap[newY][newX];
-
-if (tileChar === '*') {
-  collectedData++;
-  levelMap[newY][newX] = '.'; // Remove the data piece
-  alert(`Data fragment collected! (${collectedData} / ${totalData})`);
-}
-
-if (tileChar === 'E') {
-  if (collectedData === totalData) {
-    alert('Congratulations! You escaped the glitch!');
-  } else {
-    alert('You need to collect all data fragments first!');
+  if (newY < 0 || newY >= levelMap.length || newX < 0 || newX >= levelMap[0].length) {
+    return;
   }
-}
 
-if (tileChar === 'G') {
-  alert('You stepped into a glitch! Returning to start...');
-  playerPos = { x: 3, y: 3 }; // Reset to original position
-}
+  const tileChar = levelMap[newY][newX];
+  if (tileChar === '#') {
+    return;
+  }
+
+  if (tileChar === 'G') {
+    alert('You stepped into a glitch! Returning to start...');
+    resetPlayer();
+    return;
+  }
+
+  if (tileChar === '*') {
+    collectedData++;
+    levelMap[newY][newX] = '.';
+    alert(`Data fragment collected! (${collectedData} / ${totalData})`);
+  }
+
+  if (tileChar === 'E') {
+    if (collectedData === totalData) {
+      alert('Congratulations! You escaped the glitch!');
+      resetGame();
+    } else {
+      alert('You need to collect all data fragments first!');
+      return;
+    }
+  }
+
+  levelMap[playerPos.y][playerPos.x] = '.';
+  levelMap[newY][newX] = 'P';
+  playerPos = { x: newX, y: newY };
   drawLevel();
 }
 
-window.addEventListener('keydown', (e) => {
-  switch (e.key) {
+function resetPlayer() {
+  levelMap[playerPos.y][playerPos.x] = '.';
+  playerPos = { x: 3, y: 3 };
+  levelMap[playerPos.y][playerPos.x] = 'P';
+  collectedData = 0;
+  resetDataFragments();
+  drawLevel();
+}
+
+function resetDataFragments() {
+  // Reset all data fragments '*' to their original positions
+  // For simplicity, just hardcode them here or reload the level map
+  const originalDataPositions = [
+    { x: 8, y: 1 },
+    { x: 1, y: 8 }
+  ];
+  for (const pos of originalDataPositions) {
+    if (levelMap[pos.y][pos.x] !== 'P') {
+      levelMap[pos.y][pos.x] = '*';
+    }
+  }
+}
+
+function resetGame() {
+  // Reset entire game to initial state
+  for (let y = 0; y < levelMap.length; y++) {
+    for (let x = 0; x < levelMap[y].length; x++) {
+      if (levelMap[y][x] !== '#' && levelMap[y][x] !== 'G') {
+        levelMap[y][x] = '.';
+      }
+    }
+  }
+  levelMap[1][8] = '*';
+  levelMap[8][1] = '*';
+  playerPos = { x: 3, y: 3 };
+  levelMap[playerPos.y][playerPos.x] = 'P';
+  collectedData = 0;
+  drawLevel();
+}
+
+document.addEventListener('keydown', (e) => {
+  if (menuScreen.style.display !== 'none') return;
+
+  switch(e.key) {
     case 'ArrowUp':
     case 'w':
     case 'W':
@@ -116,4 +154,9 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-drawLevel();
+startButton.addEventListener('click', () => {
+  menuScreen.style.display = 'none';
+  gameContainer.style.display = 'grid';
+  instructions.style.display = 'block';
+  drawLevel();
+});
