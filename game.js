@@ -3,6 +3,23 @@ const startButton = document.getElementById('start-button');
 const menuScreen = document.getElementById('menu-screen');
 const instructions = document.getElementById('game-instructions');
 
+const messageBox = document.getElementById('message-box');
+const messageText = document.getElementById('message-text');
+const messageClose = document.getElementById('message-close');
+
+let inputEnabled = true;
+
+function showMessage(text) {
+  messageText.textContent = text;
+  messageBox.classList.remove('hidden');
+  inputEnabled = false;
+}
+
+messageClose.addEventListener('click', () => {
+  messageBox.classList.add('hidden');
+  inputEnabled = true;
+});
+
 const TILE_TYPES = {
   '#': 'wall',
   '.': 'floor',
@@ -47,6 +64,8 @@ function drawLevel() {
 }
 
 function movePlayer(dx, dy) {
+  if (!inputEnabled) return;
+
   const newX = playerPos.x + dx;
   const newY = playerPos.y + dy;
 
@@ -55,12 +74,10 @@ function movePlayer(dx, dy) {
   }
 
   const tileChar = levelMap[newY][newX];
-  if (tileChar === '#') {
-    return;
-  }
+  if (tileChar === '#') return;
 
   if (tileChar === 'G') {
-    alert('You stepped into a glitch! Returning to start...');
+    showMessage('You stepped into a glitch! Returning to start...');
     resetPlayer();
     return;
   }
@@ -68,15 +85,15 @@ function movePlayer(dx, dy) {
   if (tileChar === '*') {
     collectedData++;
     levelMap[newY][newX] = '.';
-    alert(`Data fragment collected! (${collectedData} / ${totalData})`);
+    showMessage(`Data fragment collected! (${collectedData} / ${totalData})`);
   }
 
   if (tileChar === 'E') {
     if (collectedData === totalData) {
-      alert('Congratulations! You escaped the glitch!');
+      showMessage('Congratulations! You escaped the glitch!');
       resetGame();
     } else {
-      alert('You need to collect all data fragments first!');
+      showMessage('You need to collect all data fragments first!');
       return;
     }
   }
@@ -97,8 +114,6 @@ function resetPlayer() {
 }
 
 function resetDataFragments() {
-  // Reset all data fragments '*' to their original positions
-  // For simplicity, just hardcode them here or reload the level map
   const originalDataPositions = [
     { x: 8, y: 1 },
     { x: 1, y: 8 }
@@ -111,7 +126,6 @@ function resetDataFragments() {
 }
 
 function resetGame() {
-  // Reset entire game to initial state
   for (let y = 0; y < levelMap.length; y++) {
     for (let x = 0; x < levelMap[y].length; x++) {
       if (levelMap[y][x] !== '#' && levelMap[y][x] !== 'G') {
@@ -128,7 +142,7 @@ function resetGame() {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (menuScreen.style.display !== 'none') return;
+  if (menuScreen.style.display !== 'none' || !inputEnabled) return;
 
   switch(e.key) {
     case 'ArrowUp':
